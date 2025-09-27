@@ -5,7 +5,6 @@ public class Item {
     public String name;
     public String location;
 
-    // 👇 Add this no-arg constructor
     public Item() {
     }
 
@@ -22,5 +21,16 @@ public class Item {
 
     public String toString() {
         return "Item{id='" + id + "', name='" + name + "', location='" + location + "'}";
+    }
+        public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getLocation() {
+        return location;
     }
 }

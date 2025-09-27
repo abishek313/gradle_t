@@ -7,35 +7,41 @@ import static org.junit.jupiter.api.Assertions.*;
 class AppTest {
 
     private GameState gameState;
-    private Inventory inventory;
 
     @BeforeEach
     void setUp() {
         gameState = new GameState();
-        inventory = new Inventory();
     }
 
     @Test
     void inventoryStartsEmpty() {
-        assertTrue(inventory.isEmpty(), "Inventory should start empty");
+        assertNotNull(gameState.getInventoryNames(), "Inventory array should not be null");
+        assertEquals(0, gameState.getInventoryNames().length, "Inventory should start empty");
     }
 
     @Test
     void canPickUpAccessCard() {
         Item card = new Item("card1", "Access Card");
-        String result = gameState.pickUpItem(card);
+        assertNotNull(card, "Card should not be null");
 
-        assertEquals("Access Card added to inventory!", result);
+        ActionResult result = gameState.pickUpItem(card);
+
+        assertNotNull(result);
+        assertEquals("Access Card added to inventory!", result.getMessage());
+        assertTrue(result.isSuccess());
         assertTrue(gameState.getInventoryNames().length > 0);
     }
 
     @Test
     void puzzleFailsWithoutRequiredItem() {
         Puzzle door = new Puzzle("door1", "Locked Door", new String[]{"card1"});
+        assertNotNull(door);
 
-        String result = gameState.tryPuzzle(door);
+        ActionResult result = gameState.tryPuzzle(door);
 
-        assertTrue(result.contains("cannot be solved"), "Puzzle should fail if Access Card is missing");
+        assertNotNull(result);
+        assertTrue(result.getMessage().contains("cannot be solved"));
+        assertFalse(result.isSuccess());
     }
 
     @Test
@@ -44,9 +50,12 @@ class AppTest {
         gameState.pickUpItem(card);
 
         Puzzle door = new Puzzle("door1", "Locked Door", new String[]{"card1"});
-        String result = gameState.tryPuzzle(door);
 
-        assertTrue(result.contains("solved"), "Puzzle should succeed once Access Card is in inventory");
+        ActionResult result = gameState.tryPuzzle(door);
+
+        assertNotNull(result);
+        assertTrue(result.getMessage().contains("solved"));
+        assertTrue(result.isSuccess());
     }
 
     @Test
@@ -55,10 +64,12 @@ class AppTest {
         level.hints = new String[]{"Look under the bed", "Check the desk drawer"};
 
         int startingTeus = gameState.getTeus();
-        String hint = gameState.buyHint(level);
+        ActionResult hint = gameState.buyHint(level);
 
-        assertNotNull(hint, "Hint should be returned");
-        assertTrue(hint.contains("Hint:"), "Hint text should include prefix");
-        assertEquals(startingTeus - 50, gameState.getTeus(), "TEUs should decrease after buying a hint");
+        assertNotNull(hint);
+        assertTrue(hint.getMessage().contains("Hint:"));
+        assertEquals(startingTeus - 50, gameState.getTeus());
+        assertTrue(hint.isSuccess());
     }
 }
+
