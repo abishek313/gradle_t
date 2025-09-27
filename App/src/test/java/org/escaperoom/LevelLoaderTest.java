@@ -1,6 +1,4 @@
 package org.escaperoom;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,7 +17,7 @@ public class LevelLoaderTest {
         assertEquals("Access Card", level.items[0].name);
 
         assertNotNull(level.puzzles);
-        assertEquals("door1", level.puzzles[0].id);
+        assertEquals("door1", level.puzzles[0].getId());
 
         assertNotNull(level.hints);
         assertEquals("Search under furniture.", level.hints[0]);

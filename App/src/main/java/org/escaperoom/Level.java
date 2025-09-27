@@ -7,8 +7,6 @@ public class Level {
     public Item[] items;
     public Puzzle[] puzzles;
     public String[] hints;
+
+public Level() {}      
 }
-
-
-      
-

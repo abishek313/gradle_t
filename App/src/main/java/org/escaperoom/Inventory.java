@@ -20,7 +20,7 @@ public class Inventory {
     public List<String> getItemNames() {
         List<String> names = new ArrayList<>();
         for (Item i : items) {
-            names.add(i.name);
+            names.add(i.getName());
         }
         return names;
     }

@@ -6,7 +6,7 @@ public class Progress {
     public String[] inventory;   // names of items
     public Settings settings;    // game settings
 
-    // No-arg constructor for Gson
+
     public Progress() {}
 }
 
