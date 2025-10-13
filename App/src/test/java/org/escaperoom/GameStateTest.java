@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AppTest {
+public class GameStateTest {
 
     private GameState gameState;
 
@@ -13,6 +13,8 @@ public class AppTest {
     void setUp() {
         gameState = new GameState();
     }
+
+    // ---------- Inventory Tests ----------
 
     @Test
     void inventoryStartsEmpty() {
@@ -34,9 +36,12 @@ public class AppTest {
     @Test
     void cannotPickUpNullItem() {
         ActionResult result = gameState.pickUpItem(null);
+
         assertFalse(result.isSuccess());
         assertEquals("Cannot pick up a null item.", result.getMessage());
     }
+
+    // ---------- Puzzle Tests ----------
 
     @Test
     void puzzleFailsWithoutRequiredItem() {
@@ -66,28 +71,58 @@ public class AppTest {
         gameState.pickUpItem(card);
         gameState.pickUpItem(key);
 
-        Puzzle door = new Puzzle("door2", "Treasure Door", new String[]{"card1", "key1"});
-        ActionResult result = gameState.tryPuzzle(door);
+        Puzzle treasureDoor = new Puzzle("door2", "Treasure Door", new String[]{"card1", "key1"});
+        ActionResult result = gameState.tryPuzzle(treasureDoor);
 
         assertTrue(result.isSuccess());
     }
 
     @Test
-    void canBuyHintsUsingTeus() {
+    void puzzleFailsIfSomeRequiredItemsMissing() {
+        Item card = new Item("card1", "Access Card");
+        gameState.pickUpItem(card);
+
+        Puzzle treasureDoor = new Puzzle("door2", "Treasure Door", new String[]{"card1", "key1"});
+        ActionResult result = gameState.tryPuzzle(treasureDoor);
+
+        assertFalse(result.isSuccess());
+    }
+
+    @Test
+    void puzzleWithNullOrEmptyRequiredItemsSucceeds() {
+        Puzzle freePuzzle1 = new Puzzle("door3", "Open Door", new String[]{});
+        Puzzle freePuzzle2 = new Puzzle("door4", "Mystery Door", null);
+
+        assertTrue(gameState.tryPuzzle(freePuzzle1).isSuccess());
+        assertTrue(gameState.tryPuzzle(freePuzzle2).isSuccess());
+    }
+
+    @Test
+    void puzzleFailsWhenNullPuzzleProvided() {
+        ActionResult result = gameState.tryPuzzle(null);
+        assertFalse(result.isSuccess());
+        assertEquals("Puzzle is null!", result.getMessage());
+    }
+
+    // ---------- Hint / TEUs Tests ----------
+
+    @Test
+    void canBuyHint() {
         Level level = new Level();
-        level.hints = new String[]{"Look under the bed", "Check the desk drawer"};
+        level.hints = new String[]{"Look under the bed"};
 
         int startingTeus = gameState.getTeus();
-        ActionResult hint = gameState.buyHint(level);
+        ActionResult result = gameState.buyHint(level);
 
-        assertTrue(hint.isSuccess());
-        assertTrue(hint.getMessage().contains("Hint:"));
+        assertTrue(result.isSuccess());
+        assertTrue(result.getMessage().contains("Hint:"));
         assertEquals(startingTeus - 50, gameState.getTeus());
     }
 
     @Test
     void cannotBuyHintIfNotEnoughTeus() {
         gameState.setTeus(0);
+
         Level level = new Level();
         level.hints = new String[]{"Look under the bed"};
 
@@ -100,7 +135,7 @@ public class AppTest {
     void cannotBuyHintIfAllHintsUsed() {
         Level level = new Level();
         level.hints = new String[]{"Hint1"};
-        gameState.buyHint(level); // use first hint
+        gameState.buyHint(level); // use the only hint
 
         ActionResult result = gameState.buyHint(level);
         assertFalse(result.isSuccess());
@@ -111,13 +146,63 @@ public class AppTest {
     void resetHintsAllowsBuyingAgain() {
         Level level = new Level();
         level.hints = new String[]{"Hint1"};
-        gameState.buyHint(level); // use first hint
-        gameState.resetHints();   // reset hints
+        gameState.buyHint(level); // use hint
+        gameState.resetHints();
 
         ActionResult result = gameState.buyHint(level);
         assertTrue(result.isSuccess());
         assertTrue(result.getMessage().contains("Hint:"));
     }
-}
 
+    @Test
+    void buyingMultipleHintsDecreasesTeus() {
+        Level level = new Level();
+        level.hints = new String[]{"Hint1", "Hint2", "Hint3"};
+
+        int startTeus = gameState.getTeus();
+
+        gameState.buyHint(level);
+        gameState.buyHint(level);
+
+        assertEquals(startTeus - 100, gameState.getTeus());
+    }
+
+    @Test
+    void buyHintDoesNotChangeInventory() {
+        Item card = new Item("card1", "Access Card");
+        gameState.pickUpItem(card);
+
+        Level level = new Level();
+        level.hints = new String[]{"Hint1"};
+
+        gameState.buyHint(level);
+        assertEquals(1, gameState.getInventoryNames().length);
+        assertEquals("Access Card", gameState.getInventoryNames()[0]);
+    }
+
+    // ---------- TEUs Tests ----------
+
+    @Test
+    void initialTeusIsCorrect() {
+        assertEquals(200, gameState.getTeus());
+    }
+
+    @Test
+    void setTeusWorks() {
+        gameState.setTeus(500);
+        assertEquals(500, gameState.getTeus());
+    }
+
+    @Test
+    void teusCannotBeNegativeWhenBuyingHints() {
+        gameState.setTeus(40);
+
+        Level level = new Level();
+        level.hints = new String[]{"Hint1"};
+
+        ActionResult result = gameState.buyHint(level);
+        assertFalse(result.isSuccess());
+        assertEquals(40, gameState.getTeus(), "TEUs should remain unchanged");
+    }
+}
 
