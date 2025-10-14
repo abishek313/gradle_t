@@ -1,6 +1,4 @@
 package org.escaperoom;
-
-import java.util.Collections;
 import java.util.List;
 
 public class GameState {
