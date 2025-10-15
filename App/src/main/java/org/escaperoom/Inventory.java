@@ -13,8 +13,9 @@ public class Inventory {
 
     // Check if an item exists in the inventory by id
     public boolean hasItem(String itemId) {
-        return items.stream().anyMatch(i -> i.id.equals(itemId));
-    }
+        return items.stream().anyMatch(i -> i.getId().equals(itemId));
+}
+
 
     // Get list of item names
     public List<String> getItemNames() {

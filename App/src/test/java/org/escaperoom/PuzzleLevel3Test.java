@@ -12,44 +12,49 @@ public class PuzzleLevel3Test {
     @BeforeEach
     void setUp() {
         gameState = new GameState();
-        level3 = LevelLoader.loadLevel("level3.json");
-        gameState.resetHints();
+        level3 = LevelLoader.loadLevel(3);
+        gameState.resetLevelHints(level3);
         gameState.setTeus(200);
     }
 
     @Test
-    void testVaultDoorFailsWithoutItems() {
-        Puzzle vaultDoor = level3.puzzles[0]; // vaultDoor
-        ActionResult result = gameState.tryPuzzle(vaultDoor);
-        assertFalse(result.isSuccess());
-        assertTrue(result.getMessage().contains("cannot be solved"));
+    void testRiddleCodePuzzle() {
+        // Without item
+        ActionResult fail = gameState.tryPuzzle(level3, 0);
+        assertFalse(fail.isSuccess());
+
+        // With item
+        gameState.pickUpItem(level3.getItems()[0]); // riddle_paper
+        ActionResult pass = gameState.tryPuzzle(level3, 0);
+        assertTrue(pass.isSuccess());
     }
 
     @Test
-    void testVaultDoorSucceedsWithItems() {
-        gameState.pickUpItem(level3.items[1]); // key3
-        gameState.pickUpItem(level3.items[2]); // card3
+    void testMachineFragmentPuzzle() {
+        // Without item
+        ActionResult fail = gameState.tryPuzzle(level3, 1);
+        assertFalse(fail.isSuccess());
 
-        Puzzle vaultDoor = level3.puzzles[0];
-        ActionResult result = gameState.tryPuzzle(vaultDoor);
-        assertTrue(result.isSuccess());
-        assertTrue(result.getMessage().contains("solved"));
+        // With item
+        gameState.pickUpItem(level3.getItems()[1]); // lever
+        ActionResult pass = gameState.tryPuzzle(level3, 1);
+        assertTrue(pass.isSuccess());
     }
 
     @Test
-    void testTreasureBoxFailsWithoutGem() {
-        Puzzle treasureBox = level3.puzzles[1]; // treasureBox
-        ActionResult result = gameState.tryPuzzle(treasureBox);
-        assertFalse(result.isSuccess());
-    }
+    void testExitDoorPuzzle() {
+        // Fail if any item missing
+        ActionResult fail1 = gameState.tryPuzzle(level3, 2);
+        assertFalse(fail1.isSuccess());
 
-    @Test
-    void testTreasureBoxSucceedsWithGem() {
-        gameState.pickUpItem(level3.items[0]); // gem1
+        // Fail if only one item
+        gameState.pickUpItem(level3.getItems()[0]);
+        ActionResult fail2 = gameState.tryPuzzle(level3, 2);
+        assertFalse(fail2.isSuccess());
 
-        Puzzle treasureBox = level3.puzzles[1];
-        ActionResult result = gameState.tryPuzzle(treasureBox);
-        assertTrue(result.isSuccess());
-        assertTrue(result.getMessage().contains("solved"));
+        gameState.pickUpItem(level3.getItems()[1]);
+        // Pass if both items
+        ActionResult pass = gameState.tryPuzzle(level3, 2);
+        assertTrue(pass.isSuccess());
     }
 }

@@ -12,46 +12,27 @@ public class PuzzleLevel2Test {
     @BeforeEach
     void setUp() {
         gameState = new GameState();
-        level2 = LevelLoader.loadLevel("level2.json");
-        gameState.resetHints();
-        gameState.setTeus(200); // reset TEUs
+        level2 = LevelLoader.loadLevel(2);       // Paradox Study
+        gameState.resetLevelHints(level2);       // reset hints
+        gameState.setTeus(200);                  // reset TEUs
     }
 
     @Test
-    void testDoor2PuzzleFailsWithoutItems() {
-        Puzzle door = level2.puzzles[0]; // door2
-        ActionResult result = gameState.tryPuzzle(door);
-        assertFalse(result.isSuccess());
+    void datacorePuzzleFailsWithoutNotes() {
+        ActionResult result = gameState.tryPuzzle(level2, 0); // datacore puzzle
+        assertFalse(result.isSuccess(), "Puzzle should fail without notes");
         assertTrue(result.getMessage().contains("cannot be solved"));
     }
 
     @Test
-    void testDoor2PuzzleSucceedsWithItems() {
-        // Pick up required items for door2
-        gameState.pickUpItem(level2.items[0]); // key1
-        gameState.pickUpItem(level2.items[1]); // card2
+    void datacorePuzzleSucceedsWithAllNotes() {
+        // Pick up all 3 notes
+        for (Item item : level2.getItems()) {
+            gameState.pickUpItem(item);
+        }
 
-        Puzzle door = level2.puzzles[0];
-        ActionResult result = gameState.tryPuzzle(door);
-        assertTrue(result.isSuccess());
-        assertTrue(result.getMessage().contains("solved"));
-    }
-
-    @Test
-    void testChest1PuzzleFailsWithoutKey() {
-        Puzzle chest = level2.puzzles[1]; // chest1 requires key1
-        ActionResult result = gameState.tryPuzzle(chest);
-        assertFalse(result.isSuccess());
-    }
-
-    @Test
-    void testChest1PuzzleSucceedsWithKey() {
-        // Pick up only the key needed for chest1
-        gameState.pickUpItem(level2.items[0]); // key1
-
-        Puzzle chest = level2.puzzles[1];
-        ActionResult result = gameState.tryPuzzle(chest);
-        assertTrue(result.isSuccess());
+        ActionResult result = gameState.tryPuzzle(level2, 0);
+        assertTrue(result.isSuccess(), "Puzzle should succeed with all notes");
         assertTrue(result.getMessage().contains("solved"));
     }
 }

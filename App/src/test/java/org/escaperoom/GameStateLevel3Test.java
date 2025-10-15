@@ -12,20 +12,19 @@ public class GameStateLevel3Test {
     @BeforeEach
     void setUp() {
         gameState = new GameState();
-        level3 = LevelLoader.loadLevel("level3.json");
-        gameState.resetHints();
-        gameState.setTeus(200);
+        level3 = LevelLoader.loadLevel(3);
+        gameState.resetLevelHints(level3);
+        gameState.setTeus(200); // starting TEUs
     }
 
     @Test
     void testPickUpItems() {
-        for (Item item : level3.items) {
+        for (Item item : level3.getItems()) {
             ActionResult result = gameState.pickUpItem(item);
             assertTrue(result.isSuccess());
             assertTrue(result.getMessage().contains(item.getName()));
         }
-
-        assertEquals(level3.items.length, gameState.getInventoryNames().length);
+        assertEquals(level3.getItems().length, gameState.getInventoryNames().length);
     }
 
     @Test
@@ -41,10 +40,10 @@ public class GameStateLevel3Test {
 
     @Test
     void testTEUsNotEnoughForHint() {
-        gameState.setTeus(40);
+        gameState.setTeus(40); // less than hint cost
         ActionResult hint = gameState.buyHint(level3);
         assertFalse(hint.isSuccess());
-        assertTrue(hint.getMessage().contains("Not enough TEUs"));
+        assertEquals("Not enough TEUs for a hint.", hint.getMessage());
     }
 }
 

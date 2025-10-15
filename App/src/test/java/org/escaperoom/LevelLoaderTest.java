@@ -1,4 +1,5 @@
 package org.escaperoom;
+
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -6,21 +7,29 @@ public class LevelLoaderTest {
 
     @Test
     void testLoadLevel1() {
-        Level level = LevelLoader.loadLevel("level1.json"); // must be in resources
+        // Load level 1 using integer ID
+        Level level = LevelLoader.loadLevel(1);
 
+        // Basic checks
         assertNotNull(level);
-        assertEquals(1, level.levelId);
-        assertEquals("The Awakening", level.name);
-        assertEquals(300, level.timeLimitSec);
+        assertEquals(1, level.getLevelId());
+        assertEquals("The Awakening", level.getName());
+        assertEquals(300, level.getTimeLimitSec());
 
-        assertNotNull(level.items);
-        assertEquals("Access Card", level.items[0].name);
+        // Items
+        assertNotNull(level.getItems());
+        assertEquals(1, level.getItems().length);
+        assertEquals("Access Card", level.getItems()[0].getName());
 
-        assertNotNull(level.puzzles);
-        assertEquals("door1", level.puzzles[0].getId());
+        // Puzzles
+        assertNotNull(level.getPuzzles());
+        assertEquals(1, level.getPuzzles().length);
+        assertEquals("door1", level.getPuzzles()[0].getId());
 
-        assertNotNull(level.hints);
-        assertEquals("Search under furniture.", level.hints[0]);
+        // Hints
+        assertNotNull(level.getHints());
+        assertEquals(1, level.getHints().length);
+        assertEquals("Search under furniture.", level.getHints()[0]);
     }
 }
 

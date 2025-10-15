@@ -1,0 +1,11 @@
+{
+  "levelId": "not-an-integer",
+  "name": 12345,
+  "timeLimitSec": "three hundred",
+  "items": [
+    { "id": 1, "name": true }
+  ],
+  "puzzles": [
+    { "id": 101, "description": false, "requiredItems": "card1" }
+  ],
+  "hints": "Look everywhere."

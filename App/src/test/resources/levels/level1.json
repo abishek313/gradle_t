@@ -1,0 +1,18 @@
+{
+  "levelId": 1,
+  "name": "The Awakening",
+  "timeLimitSec": 300,
+  "items": [
+    { "id": "card1", "name": "Access Card" }
+  ],
+  "puzzles": [
+    {
+      "id": "door1",
+      "description": "Unlock the first door",
+      "requiredItems": ["card1"]
+    }
+  ],
+  "hints": [
+    "Search under furniture."
+  ]
+}

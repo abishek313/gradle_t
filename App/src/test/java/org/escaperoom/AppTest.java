@@ -14,6 +14,9 @@ public class AppTest {
         gameState = new GameState();
     }
 
+    // ----------------------------
+    // Inventory Tests
+    // ----------------------------
     @Test
     void inventoryStartsEmpty() {
         assertNotNull(gameState.getInventoryNames(), "Inventory should not be null");
@@ -38,10 +41,14 @@ public class AppTest {
         assertEquals("Cannot pick up a null item.", result.getMessage());
     }
 
+    // ----------------------------
+    // Puzzle Tests
+    // ----------------------------
     @Test
     void puzzleFailsWithoutRequiredItem() {
-        Puzzle door = new Puzzle("door1", "Locked Door", new String[]{"card1"});
-        ActionResult result = gameState.tryPuzzle(door);
+        Level level = createTestLevelWithPuzzles(new Puzzle("door1", "Locked Door", new String[]{"card1"}));
+
+        ActionResult result = gameState.tryPuzzle(level, 0);
 
         assertFalse(result.isSuccess());
         assertTrue(result.getMessage().contains("cannot be solved"));
@@ -52,8 +59,9 @@ public class AppTest {
         Item card = new Item("card1", "Access Card");
         gameState.pickUpItem(card);
 
-        Puzzle door = new Puzzle("door1", "Locked Door", new String[]{"card1"});
-        ActionResult result = gameState.tryPuzzle(door);
+        Level level = createTestLevelWithPuzzles(new Puzzle("door1", "Locked Door", new String[]{"card1"}));
+
+        ActionResult result = gameState.tryPuzzle(level, 0);
 
         assertTrue(result.isSuccess());
         assertTrue(result.getMessage().contains("solved"));
@@ -66,16 +74,21 @@ public class AppTest {
         gameState.pickUpItem(card);
         gameState.pickUpItem(key);
 
-        Puzzle door = new Puzzle("door2", "Treasure Door", new String[]{"card1", "key1"});
-        ActionResult result = gameState.tryPuzzle(door);
+        Level level = createTestLevelWithPuzzles(
+                new Puzzle("door2", "Treasure Door", new String[]{"card1", "key1"})
+        );
+
+        ActionResult result = gameState.tryPuzzle(level, 0);
 
         assertTrue(result.isSuccess());
     }
 
+    // ----------------------------
+    // Hint / TEU Tests
+    // ----------------------------
     @Test
     void canBuyHintsUsingTeus() {
-        Level level = new Level();
-        level.hints = new String[]{"Look under the bed", "Check the desk drawer"};
+        Level level = createTestLevelWithHints("Look under the bed", "Check the desk drawer");
 
         int startingTeus = gameState.getTeus();
         ActionResult hint = gameState.buyHint(level);
@@ -88,8 +101,7 @@ public class AppTest {
     @Test
     void cannotBuyHintIfNotEnoughTeus() {
         gameState.setTeus(0);
-        Level level = new Level();
-        level.hints = new String[]{"Look under the bed"};
+        Level level = createTestLevelWithHints("Look under the bed");
 
         ActionResult result = gameState.buyHint(level);
         assertFalse(result.isSuccess());
@@ -98,8 +110,7 @@ public class AppTest {
 
     @Test
     void cannotBuyHintIfAllHintsUsed() {
-        Level level = new Level();
-        level.hints = new String[]{"Hint1"};
+        Level level = createTestLevelWithHints("Hint1");
         gameState.buyHint(level); // use first hint
 
         ActionResult result = gameState.buyHint(level);
@@ -109,15 +120,49 @@ public class AppTest {
 
     @Test
     void resetHintsAllowsBuyingAgain() {
-        Level level = new Level();
-        level.hints = new String[]{"Hint1"};
+        Level level = createTestLevelWithHints("Hint1");
         gameState.buyHint(level); // use first hint
-        gameState.resetHints();   // reset hints
+        gameState.resetLevelHints(level);   // reset hints
 
         ActionResult result = gameState.buyHint(level);
         assertTrue(result.isSuccess());
         assertTrue(result.getMessage().contains("Hint:"));
     }
+
+    // ----------------------------
+    // Helper Methods to create test Levels
+    // ----------------------------
+    // ----------------------------
+// Helper Methods to create test Levels
+// ----------------------------
+private Level createTestLevelWithPuzzles(Puzzle... puzzles) {
+    LevelData data = new LevelData();
+
+    // Convert runtime Puzzle to LevelData.Puzzle
+    LevelData.Puzzle[] jsonPuzzles = new LevelData.Puzzle[puzzles.length];
+    for (int i = 0; i < puzzles.length; i++) {
+        Puzzle p = puzzles[i];
+        jsonPuzzles[i] = new LevelData.Puzzle();
+        jsonPuzzles[i].setId(p.getId());
+        jsonPuzzles[i].setDescription(p.getDescription());
+        jsonPuzzles[i].setRequiredItems(p.getRequiredItems());
+
+    }
+
+    data.puzzles = jsonPuzzles;
+    data.items = new LevelData.Item[0];
+    data.hints = new String[0];
+
+    return new Level(data);
+}
+
+private Level createTestLevelWithHints(String... hints) {
+    LevelData data = new LevelData();
+    data.hints = hints;
+    data.items = new LevelData.Item[0];
+    data.puzzles = new LevelData.Puzzle[0]; // empty LevelData.Puzzle array
+    return new Level(data);
+}
 }
 
 

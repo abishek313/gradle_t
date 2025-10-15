@@ -2,7 +2,6 @@ package org.escaperoom;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GameStateTest {
@@ -43,73 +42,143 @@ public class GameStateTest {
 
     // ---------- Puzzle Tests ----------
 
-    @Test
-    void puzzleFailsWithoutRequiredItem() {
-        Puzzle door = new Puzzle("door1", "Locked Door", new String[]{"card1"});
-        ActionResult result = gameState.tryPuzzle(door);
+@Test
+void puzzleFailsWithoutRequiredItem() {
+    Level level = new Level();
+    level.setPuzzles(new Puzzle[]{ new Puzzle("door1", "Locked Door", new String[]{"card1"}) });
+    gameState.resetLevelHints(level);
 
-        assertFalse(result.isSuccess());
-        assertTrue(result.getMessage().contains("cannot be solved"));
-    }
+    ActionResult result = gameState.tryPuzzle(level, 0); // <-- index 0
+    assertFalse(result.isSuccess());
+}
 
-    @Test
-    void puzzleSucceedsWithRequiredItem() {
-        Item card = new Item("card1", "Access Card");
-        gameState.pickUpItem(card);
+@Test
+void puzzleSucceedsWithRequiredItem() {
+    // Pick up the required item
+    Item card = new Item("card1", "Access Card");
+    gameState.pickUpItem(card);
 
-        Puzzle door = new Puzzle("door1", "Locked Door", new String[]{"card1"});
-        ActionResult result = gameState.tryPuzzle(door);
+    // Create a level containing the puzzle
+    Puzzle door = new Puzzle("door1", "Locked Door", new String[]{"card1"});
+    LevelData data = new LevelData();
+    data.puzzles = new LevelData.Puzzle[1];
+    data.puzzles[0] = new LevelData.Puzzle();
+    data.puzzles[0].setId(door.getId());
+    data.puzzles[0].setDescription(door.getDescription());
+    data.puzzles[0].setRequiredItems(door.getRequiredItems());
+    data.items = new LevelData.Item[0];
+    data.hints = new String[0];
 
-        assertTrue(result.isSuccess());
-        assertTrue(result.getMessage().contains("solved"));
-    }
+    Level level = new Level(data);
 
-    @Test
-    void puzzleSucceedsWithMultipleRequiredItems() {
-        Item card = new Item("card1", "Access Card");
-        Item key = new Item("key1", "Golden Key");
-        gameState.pickUpItem(card);
-        gameState.pickUpItem(key);
+    // Try the puzzle using the level and index 0
+    ActionResult result = gameState.tryPuzzle(level, 0);
 
-        Puzzle treasureDoor = new Puzzle("door2", "Treasure Door", new String[]{"card1", "key1"});
-        ActionResult result = gameState.tryPuzzle(treasureDoor);
-
-        assertTrue(result.isSuccess());
-    }
-
-    @Test
-    void puzzleFailsIfSomeRequiredItemsMissing() {
-        Item card = new Item("card1", "Access Card");
-        gameState.pickUpItem(card);
-
-        Puzzle treasureDoor = new Puzzle("door2", "Treasure Door", new String[]{"card1", "key1"});
-        ActionResult result = gameState.tryPuzzle(treasureDoor);
-
-        assertFalse(result.isSuccess());
-    }
+    assertTrue(result.isSuccess());
+    assertTrue(result.getMessage().contains("solved"));
+}
 
     @Test
-    void puzzleWithNullOrEmptyRequiredItemsSucceeds() {
-        Puzzle freePuzzle1 = new Puzzle("door3", "Open Door", new String[]{});
-        Puzzle freePuzzle2 = new Puzzle("door4", "Mystery Door", null);
+void puzzleSucceedsWithMultipleRequiredItems() {
+    // Pick up required items
+    Item card = new Item("card1", "Access Card");
+    Item key = new Item("key1", "Golden Key");
+    gameState.pickUpItem(card);
+    gameState.pickUpItem(key);
 
-        assertTrue(gameState.tryPuzzle(freePuzzle1).isSuccess());
-        assertTrue(gameState.tryPuzzle(freePuzzle2).isSuccess());
-    }
+    // Create the puzzle
+    Puzzle treasureDoor = new Puzzle("door2", "Treasure Door", new String[]{"card1", "key1"});
+
+    // Wrap it inside LevelData
+    LevelData data = new LevelData();
+    data.puzzles = new LevelData.Puzzle[1];
+    data.puzzles[0] = new LevelData.Puzzle();
+    data.puzzles[0].setId(treasureDoor.getId());
+    data.puzzles[0].setDescription(treasureDoor.getDescription());
+    data.puzzles[0].setRequiredItems(treasureDoor.getRequiredItems());
+    data.items = new LevelData.Item[0];
+    data.hints = new String[0];
+
+    Level level = new Level(data);
+
+    // Try the puzzle using the level and index 0
+    ActionResult result = gameState.tryPuzzle(level,0);
+
+    assertTrue(result.isSuccess());
+}
+
 
     @Test
-    void puzzleFailsWhenNullPuzzleProvided() {
-        ActionResult result = gameState.tryPuzzle(null);
-        assertFalse(result.isSuccess());
-        assertEquals("Puzzle is null!", result.getMessage());
-    }
+void puzzleFailsIfSomeRequiredItemsMissing() {
+    Item card = new Item("card1", "Access Card");
+    gameState.pickUpItem(card);
+
+    // Create the puzzle
+    Puzzle treasureDoor = new Puzzle("door2", "Treasure Door", new String[]{"card1", "key1"});
+
+    // Wrap in LevelData -> Level
+    LevelData data = new LevelData();
+    data.puzzles = new LevelData.Puzzle[1];
+    data.puzzles[0] = new LevelData.Puzzle();
+    data.puzzles[0].setId(treasureDoor.getId());
+    data.puzzles[0].setDescription(treasureDoor.getDescription());
+    data.puzzles[0].setRequiredItems(treasureDoor.getRequiredItems());
+    data.items = new LevelData.Item[0];
+    data.hints = new String[0];
+    Level level = new Level(data);
+
+    ActionResult result = gameState.tryPuzzle(level, 0);
+    assertFalse(result.isSuccess());
+}
+
+    @Test
+void puzzleWithNullOrEmptyRequiredItemsSucceeds() {
+    // Create free puzzles
+    Puzzle freePuzzle1 = new Puzzle("door3", "Open Door", new String[]{});
+    Puzzle freePuzzle2 = new Puzzle("door4", "Mystery Door", null);
+
+    // Wrap in LevelData -> Level
+    LevelData data = new LevelData();
+    data.puzzles = new LevelData.Puzzle[2];
+    data.puzzles[0] = new LevelData.Puzzle();
+    data.puzzles[0].setId(freePuzzle1.getId());
+    data.puzzles[0].setDescription(freePuzzle1.getDescription());
+    data.puzzles[0].setRequiredItems(freePuzzle1.getRequiredItems());
+
+    data.puzzles[1] = new LevelData.Puzzle();
+    data.puzzles[1].setId(freePuzzle2.getId());
+    data.puzzles[1].setDescription(freePuzzle2.getDescription());
+    data.puzzles[1].setRequiredItems(freePuzzle2.getRequiredItems());
+
+    data.items = new LevelData.Item[0];
+    data.hints = new String[0];
+    Level level = new Level(data);
+
+    assertTrue(gameState.tryPuzzle(level, 0).isSuccess());
+    assertTrue(gameState.tryPuzzle(level, 1).isSuccess());
+}
+
+@Test
+void puzzleFailsWhenNullPuzzleProvided() {
+    LevelData data = new LevelData();
+    data.puzzles = new LevelData.Puzzle[0];
+    data.items = new LevelData.Item[0];
+    data.hints = new String[0];
+    Level level = new Level(data);
+
+    ActionResult result = gameState.tryPuzzle(level, -1);
+    assertFalse(result.isSuccess());
+    assertEquals("Invalid puzzle index!", result.getMessage());
+}
+
 
     // ---------- Hint / TEUs Tests ----------
 
     @Test
     void canBuyHint() {
         Level level = new Level();
-        level.hints = new String[]{"Look under the bed"};
+        level.setHints(new String[]{"Look under the bed"}); // use setter
+        gameState.resetLevelHints(level);
 
         int startingTeus = gameState.getTeus();
         ActionResult result = gameState.buyHint(level);
@@ -124,7 +193,8 @@ public class GameStateTest {
         gameState.setTeus(0);
 
         Level level = new Level();
-        level.hints = new String[]{"Look under the bed"};
+        level.setHints(new String[]{"Look under the bed"});
+        gameState.resetLevelHints(level);
 
         ActionResult result = gameState.buyHint(level);
         assertFalse(result.isSuccess());
@@ -134,10 +204,12 @@ public class GameStateTest {
     @Test
     void cannotBuyHintIfAllHintsUsed() {
         Level level = new Level();
-        level.hints = new String[]{"Hint1"};
-        gameState.buyHint(level); // use the only hint
+        level.setHints(new String[]{"Hint1"});
+        gameState.resetLevelHints(level);
 
+        gameState.buyHint(level); // use the only hint
         ActionResult result = gameState.buyHint(level);
+
         assertFalse(result.isSuccess());
         assertEquals("No more hints available.", result.getMessage());
     }
@@ -145,9 +217,11 @@ public class GameStateTest {
     @Test
     void resetHintsAllowsBuyingAgain() {
         Level level = new Level();
-        level.hints = new String[]{"Hint1"};
+        level.setHints(new String[]{"Hint1"});
+        gameState.resetLevelHints(level);
+
         gameState.buyHint(level); // use hint
-        gameState.resetHints();
+        gameState.resetLevelHints(level);
 
         ActionResult result = gameState.buyHint(level);
         assertTrue(result.isSuccess());
@@ -157,7 +231,8 @@ public class GameStateTest {
     @Test
     void buyingMultipleHintsDecreasesTeus() {
         Level level = new Level();
-        level.hints = new String[]{"Hint1", "Hint2", "Hint3"};
+        level.setHints(new String[]{"Hint1", "Hint2", "Hint3"});
+        gameState.resetLevelHints(level);
 
         int startTeus = gameState.getTeus();
 
@@ -173,7 +248,8 @@ public class GameStateTest {
         gameState.pickUpItem(card);
 
         Level level = new Level();
-        level.hints = new String[]{"Hint1"};
+        level.setHints(new String[]{"Hint1"});
+        gameState.resetLevelHints(level);
 
         gameState.buyHint(level);
         assertEquals(1, gameState.getInventoryNames().length);
@@ -198,11 +274,13 @@ public class GameStateTest {
         gameState.setTeus(40);
 
         Level level = new Level();
-        level.hints = new String[]{"Hint1"};
+        level.setHints(new String[]{"Hint1"});
+        gameState.resetLevelHints(level);
 
         ActionResult result = gameState.buyHint(level);
         assertFalse(result.isSuccess());
         assertEquals(40, gameState.getTeus(), "TEUs should remain unchanged");
     }
 }
+
 

@@ -7,33 +7,36 @@ public class Level2LoaderTest {
 
     @Test
     void testLoadLevel2() {
-        // Load the level2.json file
-        Level level = LevelLoader.loadLevel("level2.json");
+        // Load level 2
+        Level level = LevelLoader.loadLevel(2);
 
         // Basic checks
         assertNotNull(level, "Level should not be null");
-        assertEquals(2, level.levelId);
-        assertEquals("The Hidden Chamber", level.name);
-        assertEquals(400, level.timeLimitSec);
+        assertEquals(2, level.getLevelId());
+        assertEquals("The Paradox Study", level.getName());
+        assertEquals(300, level.getTimeLimitSec());
 
         // Items
-        assertNotNull(level.items, "Level items should not be null");
-        assertEquals(2, level.items.length);
-        assertEquals("Golden Key", level.items[0].name);
-        assertEquals("Security Card", level.items[1].name);
+        assertNotNull(level.getItems(), "Level items should not be null");
+        assertEquals(3, level.getItems().length);
+        assertEquals("Note 1", level.getItems()[0].getName());
+        assertEquals("Note 2", level.getItems()[1].getName());
+        assertEquals("Note 3", level.getItems()[2].getName());
 
         // Puzzles
-        assertNotNull(level.puzzles, "Level puzzles should not be null");
-        assertEquals(2, level.puzzles.length);
-        assertEquals("door2", level.puzzles[0].getId());
-        assertEquals("chest1", level.puzzles[1].getId());
+        assertNotNull(level.getPuzzles(), "Level puzzles should not be null");
+        assertEquals(1, level.getPuzzles().length);
+        assertEquals("datacore", level.getPuzzles()[0].getId());
+        assertEquals("Collect 3 notes → code 3-7-2 → unlock Data Core",
+                     level.getPuzzles()[0].getDescription());
 
         // Hints
-        assertNotNull(level.hints, "Level hints should not be null");
-        assertEquals(3, level.hints.length);
-        assertEquals("Check behind the bookshelf", level.hints[0]);
-        assertEquals("The drawer might have a key", level.hints[1]);
-        assertEquals("Use the golden key on the chest", level.hints[2]);
+        assertNotNull(level.getHints(), "Level hints should not be null");
+        assertEquals(2, level.getHints().length);
+        assertEquals("Notes contain numbers.", level.getHints()[0]);
+        assertEquals("Combine into sequence.", level.getHints()[1]);
     }
 }
+
+
 

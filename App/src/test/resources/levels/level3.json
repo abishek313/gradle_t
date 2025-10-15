@@ -1,0 +1,32 @@
+{
+  "levelId": 3,
+  "name": "The Servant Machines",
+  "timeLimitSec": 400,
+  "items": [
+    { "id": "riddle_paper", "name": "Riddle Paper" },
+    { "id": "lever", "name": "Machine Lever" }
+  ],
+  "puzzles": [
+    {
+      "id": "riddle_code",
+      "description": "Solve the riddle to get the first code fragment",
+      "requiredItems": ["riddle_paper"]
+    },
+    {
+      "id": "machine_fragment",
+      "description": "Insert lever into machine to get the second fragment",
+      "requiredItems": ["lever"]
+    },
+    {
+      "id": "exit_door",
+      "description": "Combine code fragments to unlock the door",
+      "requiredItems": ["riddle_paper", "lever"]
+    }
+  ],
+  "hints": [
+    "The riddle holds a fragment.",
+    "The machine gives another fragment."
+  ]
+}
+
+

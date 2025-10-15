@@ -1,26 +1,20 @@
 package org.escaperoom;
 
-import com.google.gson.Gson;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.util.logging.Logger;
 
 public class LevelLoader {
+    private static final Logger LOGGER = Logger.getLogger(LevelLoader.class.getName());
+    private static final DataLoader dataLoader = new DataLoader(); // make static
 
-    public static Level loadLevel(String resourceName) {
-        InputStream is = LevelLoader.class.getClassLoader().getResourceAsStream(resourceName);
-        if (is == null) {
-            throw new RuntimeException("Resource not found: " + resourceName);
-        }
-
-        try (Reader reader = new InputStreamReader(is)) {
-            Gson gson = new Gson();
-            return gson.fromJson(reader, Level.class);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+    public static Level loadLevel(int levelId) {
+    String filePath = "levels/level" + levelId + ".json";
+    LOGGER.info("Loading level JSON from: " + filePath);
+    LevelData data = dataLoader.loadData(filePath, LevelData.class);
+    return new Level(data); // convert LevelData -> Level
 }
+
+}
+
 
 
 

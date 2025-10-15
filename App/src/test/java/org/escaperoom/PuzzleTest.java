@@ -2,95 +2,83 @@ package org.escaperoom;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PuzzleTest {
 
     private GameState gameState;
+    private Level level;
 
     @BeforeEach
     void setUp() {
         gameState = new GameState();
+        // Create a dummy Level for testing puzzles
+        level = new Level();
+        level.setItems(new Item[]{
+                new Item("card1", "Access Card"),
+                new Item("key1", "Golden Key")
+        });
+        level.setPuzzles(new Puzzle[]{
+                new Puzzle("door1", "Locked Door", new String[]{"card1"}),
+                new Puzzle("door2", "Treasure Door", new String[]{"card1", "key1"}),
+                new Puzzle("door3", "Open Door", new String[]{}),
+                new Puzzle("door4", "Mystery Door", null)
+        });
+        gameState.resetLevelHints(level);
     }
 
     @Test
     void puzzleFailsWithoutRequiredItem() {
-        Puzzle door = new Puzzle("door1", "Locked Door", new String[]{"card1"});
-
-        ActionResult result = gameState.tryPuzzle(door);
-
+        ActionResult result = gameState.tryPuzzle(level, 0); // door1
         assertFalse(result.isSuccess());
         assertTrue(result.getMessage().contains("cannot be solved"));
     }
 
     @Test
     void puzzleSucceedsWithRequiredItem() {
-        Item card = new Item("card1", "Access Card");
-        gameState.pickUpItem(card);
-
-        Puzzle door = new Puzzle("door1", "Locked Door", new String[]{"card1"});
-
-        ActionResult result = gameState.tryPuzzle(door);
-
+        gameState.pickUpItem(level.getItems()[0]); // card1
+        ActionResult result = gameState.tryPuzzle(level, 0); // door1
         assertTrue(result.isSuccess());
         assertTrue(result.getMessage().contains("solved"));
     }
 
     @Test
     void puzzleSucceedsWithMultipleRequiredItems() {
-        Item card = new Item("card1", "Access Card");
-        Item key = new Item("key1", "Golden Key");
-        gameState.pickUpItem(card);
-        gameState.pickUpItem(key);
-
-        Puzzle treasureDoor = new Puzzle("door2", "Treasure Door", new String[]{"card1", "key1"});
-
-        ActionResult result = gameState.tryPuzzle(treasureDoor);
-
+        gameState.pickUpItem(level.getItems()[0]); // card1
+        gameState.pickUpItem(level.getItems()[1]); // key1
+        ActionResult result = gameState.tryPuzzle(level, 1); // door2
         assertTrue(result.isSuccess());
         assertTrue(result.getMessage().contains("solved"));
     }
 
     @Test
     void puzzleFailsIfSomeRequiredItemsMissing() {
-        Item card = new Item("card1", "Access Card");
-        gameState.pickUpItem(card);
-
-        Puzzle treasureDoor = new Puzzle("door2", "Treasure Door", new String[]{"card1", "key1"});
-
-        ActionResult result = gameState.tryPuzzle(treasureDoor);
-
+        gameState.pickUpItem(level.getItems()[0]); // card1
+        ActionResult result = gameState.tryPuzzle(level, 1); // door2
         assertFalse(result.isSuccess());
         assertTrue(result.getMessage().contains("cannot be solved"));
     }
 
     @Test
     void puzzleWithNoRequiredItemsSucceeds() {
-        Puzzle freePuzzle = new Puzzle("door3", "Open Door", new String[]{});
-
-        ActionResult result = gameState.tryPuzzle(freePuzzle);
-
+        ActionResult result = gameState.tryPuzzle(level, 2); // door3
         assertTrue(result.isSuccess());
         assertTrue(result.getMessage().contains("solved"));
     }
 
     @Test
     void puzzleWithNullRequiredItemsSucceeds() {
-        Puzzle freePuzzle = new Puzzle("door4", "Mystery Door", null);
-
-        ActionResult result = gameState.tryPuzzle(freePuzzle);
-
+        ActionResult result = gameState.tryPuzzle(level, 3); // door4
         assertTrue(result.isSuccess());
         assertTrue(result.getMessage().contains("solved"));
     }
 
     @Test
     void puzzleFailsWhenNullPuzzleProvided() {
-        ActionResult result = gameState.tryPuzzle(null);
-
+        ActionResult result = gameState.tryPuzzle((Level)null, 0);
         assertFalse(result.isSuccess());
         assertEquals("Puzzle is null!", result.getMessage());
     }
 }
+
 

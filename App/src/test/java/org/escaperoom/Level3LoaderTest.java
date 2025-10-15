@@ -7,20 +7,32 @@ public class Level3LoaderTest {
 
     @Test
     void testLoadLevel3() {
-        Level level = LevelLoader.loadLevel("level3.json");
+        Level level = LevelLoader.loadLevel(3);
 
-        assertNotNull(level);
-        assertEquals(3, level.levelId);
-        assertEquals("The Forgotten Vault", level.name);
-        assertEquals(500, level.timeLimitSec);
+        // Basic checks
+        assertNotNull(level, "Level should not be null");
+        assertEquals(3, level.getLevelId());
+        assertEquals("The Servant Machines", level.getName());
+        assertEquals(400, level.getTimeLimitSec());
 
-        assertNotNull(level.items);
-        assertEquals("Ruby Gem", level.items[0].name);
+        // Items
+        assertNotNull(level.getItems(), "Level items should not be null");
+        assertEquals(2, level.getItems().length);
+        assertEquals("Riddle Paper", level.getItems()[0].getName());
+        assertEquals("Machine Lever", level.getItems()[1].getName());
 
-        assertNotNull(level.puzzles);
-        assertEquals("vaultDoor", level.puzzles[0].getId());
+        // Puzzles
+        assertNotNull(level.getPuzzles(), "Level puzzles should not be null");
+        assertEquals(3, level.getPuzzles().length);
+        assertEquals("riddle_code", level.getPuzzles()[0].getId());
+        assertEquals("machine_fragment", level.getPuzzles()[1].getId());
+        assertEquals("exit_door", level.getPuzzles()[2].getId());
 
-        assertNotNull(level.hints);
-        assertEquals("Check the statue for hidden items", level.hints[0]);
+        // Hints
+        assertNotNull(level.getHints(), "Level hints should not be null");
+        assertEquals(2, level.getHints().length);
+        assertEquals("The riddle holds a fragment.", level.getHints()[0]);
+        assertEquals("The machine gives another fragment.", level.getHints()[1]);
     }
 }
+
