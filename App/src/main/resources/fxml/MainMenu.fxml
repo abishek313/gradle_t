@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.escaperoom.ui.controllers.MainMenuController">
+    <!-- Background image -->
+    <ImageView fitWidth="1152" fitHeight="768" preserveRatio="false">
+        <image>
+            <Image url="@/images/menu_bg.png"/>
+        </image>
+    </ImageView>
+
+    <!-- Menu buttons in a VBox -->
+    <VBox spacing="20" alignment="CENTER" layoutX="400" layoutY="300">
+        <Label text="Escape Room" style="-fx-font-size:36px; -fx-text-fill:white;"/>
+        <Button fx:id="startBtn" text="Start Game"/>
+        <Button fx:id="settingsBtn" text="Settings"/>
+        <Button fx:id="exitBtn" text="Exit"/>
+    </VBox>
+</AnchorPane>

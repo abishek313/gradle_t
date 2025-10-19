@@ -1,5 +1,4 @@
 package org.escaperoom;
-
 public class GameState {
     private final Inventory inventory;
     private int teus;
@@ -10,6 +9,15 @@ public class GameState {
     public GameState() {
         this.inventory = new Inventory();
         this.teus = STARTING_TEUS;
+    }
+    // Check if inventory contains an item by object
+    public boolean hasItem(Item item) {
+        return inventory.hasItem(item);
+    }
+
+    // Check if inventory contains an item by ID
+    public boolean hasItem(String itemId) {
+        return inventory.hasItem(itemId);
     }
 
     // Pick up an item

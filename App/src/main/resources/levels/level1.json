@@ -6,10 +6,13 @@
     { "id": "card1", "name": "Access Card" }
   ],
   "puzzles": [
-    { "id": "door1", "description": "Unlock the first door", "requiredItems": ["card1"] }
+    {
+      "id": "door1",
+      "description": "Unlock the first door",
+      "requiredItems": ["card1"]
+    }
   ],
   "hints": [
     "Search under furniture."
   ]
 }
-

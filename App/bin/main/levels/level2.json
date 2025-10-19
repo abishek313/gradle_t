@@ -1,0 +1,21 @@
+{
+  "levelId": 2,
+  "name": "The Paradox Study",
+  "timeLimitSec": 300,
+  "items": [
+    { "id": "note1", "name": "Note 1" },
+    { "id": "note2", "name": "Note 2" },
+    { "id": "note3", "name": "Note 3" }
+  ],
+  "puzzles": [
+    {
+      "id": "datacore",
+      "description": "Collect 3 notes → code 3-7-2 → unlock Data Core",
+      "requiredItems": ["note1", "note2", "note3"]
+    }
+  ],
+  "hints": [
+    "Notes contain numbers.",
+    "Combine into sequence."
+  ]
+}

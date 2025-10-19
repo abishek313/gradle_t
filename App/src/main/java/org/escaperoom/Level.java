@@ -61,6 +61,13 @@ public class Level {
         this.itemsCollected = new boolean[items.length];
         this.hintsUsed = 0;
     }
+    // Inside Level.java
+    public boolean areAllPuzzlesSolved() {
+        for (boolean solved : puzzlesSolved) {
+            if (!solved) return false;
+        }
+        return true;
+    }
 
     // ----------------------------
     // Runtime actions

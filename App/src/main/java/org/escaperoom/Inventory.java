@@ -15,7 +15,9 @@ public class Inventory {
     public boolean hasItem(String itemId) {
         return items.stream().anyMatch(i -> i.getId().equals(itemId));
 }
-
+    public boolean hasItem(Item item) {
+        return items.contains(item);
+    }
 
     // Get list of item names
     public List<String> getItemNames() {

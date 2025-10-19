@@ -18,7 +18,9 @@ public class Puzzle {
     public String getId() {
         return id;
     }
-
+    public String getName() {
+    return description;
+    }
     public String getDescription() {
         return description;
     }
