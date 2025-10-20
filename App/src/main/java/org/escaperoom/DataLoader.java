@@ -9,6 +9,10 @@ import java.util.logging.Logger;
 public class DataLoader {
     private static final Logger LOGGER = Logger.getLogger(DataLoader.class.getName());
     private ObjectMapper objectMapper = new ObjectMapper();
+    public Level loadLevel(int levelId) {
+        String fileName = "levels/level" + levelId + ".json";
+        return loadData(fileName, Level.class);
+    }
 
     public <T> T loadData(String fileName, Class<T> clazz) {
         InputStream in = getClass().getClassLoader().getResourceAsStream(fileName);

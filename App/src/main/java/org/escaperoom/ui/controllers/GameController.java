@@ -3,58 +3,84 @@ package org.escaperoom.ui.controllers;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import org.escaperoom.*;
+import javafx.stage.Stage;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class GameController {
 
     private GameState gameState;
     private Level currentLevel;
-
+    private int seconds = 0;
     private Timeline timer;
     private int remainingSeconds;
 
-    @FXML private Label teusLabel;
-    @FXML private ListView<String> inventoryList;
-    @FXML private Button hintButton;
-    @FXML private Label hintLabel;
+    @FXML private ImageView backgroundImageView;
     @FXML private VBox itemsBox;
     @FXML private VBox puzzlesBox;
-    @FXML private ImageView backgroundImageView;
+    @FXML private ListView<String> inventoryList;
+    @FXML private Button hintButton;        
     @FXML private Label timerLabel;
+    @FXML private StackPane puzzleArea;
+    @FXML private Button menuBtn;
+    @FXML private Label teusLabel;
+    @FXML private Label hintLabel;
 
     /** Initialize level with items, puzzles, background, and timer */
-    public void initLevel(Level level, GameState existingState) {
-        this.currentLevel = level;
-        this.gameState = existingState != null ? existingState : new GameState();
-        hintLabel.setText("");
+   public void initLevel(Level level, GameState existingState) {
+    this.currentLevel = level;
+    this.gameState = existingState != null ? existingState : new GameState();
 
-        setupBackground();
-        setupItemButtons();
-        setupPuzzleButtons();
-        startTimer(level.getTimeLimitSec());
-        updateHUD();
+    // Clear previous HUD
+    hintLabel.setText("");
+    inventoryList.getItems().clear();
+    itemsBox.getChildren().clear();
+    puzzlesBox.getChildren().clear();
 
-        // Hint button action
-        hintButton.setOnAction(e -> showHint());
-    }
+    setupBackground();
+    setupItemButtons();
+    setupPuzzleButtons();
+    startTimer(level.getTimeLimitSec());
+    updateHUD();
+}
 
     /** Load level background */
     private void setupBackground() {
-        try {
-            String path = "/images/level" + currentLevel.getLevelId() + ".png";
-            Image img = new Image(getClass().getResourceAsStream(path));
-            backgroundImageView.setImage(img);
-        } catch (Exception e) {
-            System.out.println("Background image not found for level " + currentLevel.getLevelId());
-            backgroundImageView.setImage(new Image(getClass().getResourceAsStream("/images/default.png")));
-        }
+    try {
+        String path = "/images/level" + currentLevel.getLevelId() + ".png";
+        Image bgImage = new Image(getClass().getResourceAsStream(path));
+        backgroundImageView.setImage(bgImage);
+
+        backgroundImageView.setPreserveRatio(false);
+        backgroundImageView.setSmooth(true);
+        backgroundImageView.setMouseTransparent(true);
+
+        // Bind to scene width and height to make sure it resizes even if parent isn't ready yet
+        backgroundImageView.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                backgroundImageView.fitWidthProperty().bind(newScene.widthProperty());
+                backgroundImageView.fitHeightProperty().bind(newScene.heightProperty());
+            }
+        });
+
+        System.out.println("Background loaded: " + path);
+
+    } catch (Exception e) {
+        System.out.println("Background image not found for level " + currentLevel.getLevelId());
+        e.printStackTrace();
+    }
     }
 
     /** Setup item buttons dynamically */
@@ -101,9 +127,8 @@ public class GameController {
             hintLabel.setText("Level Completed!");
         }
     }
-
-    /** Show hint from GameState */
-    private void showHint() {
+    @FXML
+    private void handleHint() { 
         ActionResult result = gameState.buyHint(currentLevel);
         hintLabel.setText(result.getMessage());
         updateHUD();

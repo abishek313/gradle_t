@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.escaperoom.ui.controllers.SettingsController"
+            prefWidth="400" prefHeight="300" style="-fx-background-color: rgba(0,0,0,0.8); -fx-border-radius: 10; -fx-background-radius: 10;">
+    
+    <VBox spacing="20" alignment="CENTER" layoutX="50" layoutY="40">
+        <Label text="Settings" style="-fx-font-size:24px; -fx-text-fill:white;"/>
+        
+        <!-- Example settings simplified -->
+        <HBox spacing="10" alignment="CENTER">
+            <Label text="Sound:" style="-fx-text-fill:white;"/>
+            <Slider fx:id="soundSlider" min="0" max="100" value="50" prefWidth="150"/>
+        </HBox>
+        <Button fx:id="backBtn" text="Back" prefWidth="200"/>
+    </VBox>
+</AnchorPane>

@@ -8,6 +8,10 @@ public class LevelSelectController {
     private void startLevel1() {
         System.out.println("Starting Level 1 (connect to GameState here)");
     }
+    @FXML
+    private void startLevel2() { // Added to match FXML binding
+        System.out.println("Starting Level 2 (connect to GameState here)");
+    }
 
     @FXML
     private void backToMenu() {

@@ -1,29 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.Region?>
 
-<VBox xmlns:fx="http://javafx.com/fxml" spacing="15" alignment="CENTER"
-      fx:controller="org.escaperoom.ui.controllers.GameController">
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="org.escaperoom.ui.controllers.GameController"
+           style="-fx-background-color: black;">
 
-    <ImageView fx:id="backgroundImageView" fitHeight="400" fitWidth="600"/>
+    <!-- Background image that stretches with the window -->
+    <ImageView fx:id="backgroundImageView"
+               preserveRatio="false"
+               smooth="true"
+               mouseTransparent="true"/>
 
-    <HBox spacing="20" alignment="CENTER">
-        <Label fx:id="timerLabel" text="00:00"/>
-        <Label fx:id="teusLabel" text="TEUs: 200"/>
-        <Button fx:id="hintButton" text="Buy Hint (50 TEUs)" onAction="#handleHint"/>
-        <Label fx:id="hintLabel" text="Hint will appear here"/>
-    </HBox>
+    <!-- Game UI overlays -->
+    <BorderPane>
 
-    <Label text="Inventory:"/>
-    <ListView fx:id="inventoryList" prefHeight="80"/>
+        <!-- Top HUD -->
+        <top>
+            <HBox spacing="20"
+                  alignment="CENTER_LEFT"
+                  style="-fx-padding: 15; -fx-background-color: transparent;">
+                <Label text="Time:"
+                       style="-fx-text-fill: white; -fx-font-size: 18px;"/>
+                <Label fx:id="timerLabel"
+                       text="00:00"
+                       style="-fx-text-fill: #00e0ff; -fx-font-size: 18px;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button fx:id="menuBtn"
+                        text="Menu"
+                        style="-fx-font-size: 14px;"/>
+            </HBox>
+        </top>
 
-    <Label text="Items in room:"/>
-    <VBox fx:id="itemsBox" spacing="10"/>
+        <!-- Center puzzle area -->
+        <center>
+            <StackPane fx:id="puzzleArea"
+                       style="-fx-background-color: rgba(255,255,255,0.05);
+                              -fx-border-color: #00e0ff;
+                              -fx-border-width: 2;">
+                <Label text="Solve the puzzle..."
+                       style="-fx-text-fill:white; -fx-font-size:24px;"/>
+            </StackPane>
+        </center>
 
-    <Label text="Puzzles in room:"/>
-    <VBox fx:id="puzzlesBox" spacing="10"/>
-</VBox>
+        <!-- Bottom inventory -->
+        <bottom>
+            <HBox fx:id="inventoryBar"
+                  alignment="CENTER"
+                  spacing="15"
+                  style="-fx-padding: 10; -fx-background-color: transparent;">
+                <Label text="Inventory:" style="-fx-text-fill: white;"/>
+                <ListView fx:id="inventoryList"
+                          prefHeight="50"
+                          prefWidth="200"/>
+                <Button fx:id="hintButton" text="Hint"/>
+                <Label fx:id="hintLabel"
+                       text=""
+                       style="-fx-text-fill: yellow;
+                              -fx-background-color: transparent;"/>
+            </HBox>
+        </bottom>
+
+        <!-- Right VBox for item buttons -->
+        <right>
+            <VBox fx:id="itemsBox"
+                  spacing="10"
+                  style="-fx-padding: 10;"/>
+        </right>
+
+        <!-- Left VBox for puzzle buttons -->
+        <left>
+            <VBox fx:id="puzzlesBox"
+                  spacing="10"
+                  style="-fx-padding: 10;"/>
+        </left>
+
+    </BorderPane>
+</StackPane>

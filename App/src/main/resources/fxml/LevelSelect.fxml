@@ -3,6 +3,7 @@
 <?import javafx.scene.layout.VBox?>
 <VBox xmlns:fx="http://javafx.com/fxml" spacing="20" alignment="CENTER"
       fx:controller="org.escaperoom.ui.controllers.LevelSelectController">
-    <Button fx:id="level1Button" text="Level 1" onAction="#handleLevel1"/>
-    <Button fx:id="level2Button" text="Level 2" onAction="#handleLevel2"/>
+    <Button fx:id="level1Button" text="Level 1" onAction="#startLevel1"/>
+    <Button fx:id="level2Button" text="Level 2" onAction="#startLevel2"/>
+    <Button text="Back to Menu" onAction="#backToMenu"/>
 </VBox>

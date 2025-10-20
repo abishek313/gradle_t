@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="org.escaperoom.ui.controllers.GameController"
+           prefWidth="1280" prefHeight="720"
+           style="-fx-background-color: black;">
+
+    <!-- Background Image -->
+    <ImageView fx:id="backgroundImageView" fitWidth="1280" fitHeight="720" preserveRatio="false"/>
+
+    <!-- Transparent overlay for the UI -->
+    <BorderPane style="-fx-background-color: rgba(0, 0, 0, 0.45); -fx-padding: 15;">
+        
+        <!-- Top section: Timer + TEUs + Menu -->
+        <top>
+            <HBox alignment="CENTER" spacing="20">
+                <Button fx:id="menuBtn" text="☰ Menu" style="-fx-background-color: #111; -fx-text-fill: #0ff;"/>
+                <Label fx:id="timerLabel" text="00:00" style="-fx-font-size: 20px; -fx-text-fill: cyan;"/>
+                <Label fx:id="teusLabel" text="TEUs: 0" style="-fx-font-size: 20px; -fx-text-fill: white;"/>
+            </HBox>
+        </top>
+
+        <!-- Left side: Inventory -->
+        <left>
+            <VBox alignment="TOP_CENTER" spacing="10" prefWidth="220" style="-fx-padding: 10;">
+                <Label text="Inventory" style="-fx-text-fill: #00ffff; -fx-font-size: 18px;"/>
+                <ListView fx:id="inventoryList" prefHeight="400" style="-fx-background-color: rgba(10,10,10,0.7); -fx-text-fill: white;"/>
+            </VBox>
+        </left>
+
+        <!-- Center: Game area (items, puzzles, etc.) -->
+        <center>
+            <VBox alignment="CENTER" spacing="20">
+                <StackPane fx:id="puzzleArea" prefWidth="600" prefHeight="400"
+                           style="-fx-background-color: rgba(0,0,0,0.6); -fx-border-color: #00ffff; -fx-border-width: 2;"/>
+                
+                <HBox alignment="CENTER" spacing="20">
+                    <VBox fx:id="itemsBox" spacing="10" alignment="CENTER">
+                        <Label text="Items" style="-fx-text-fill: cyan; -fx-font-size: 16px;"/>
+                    </VBox>
+                    <VBox fx:id="puzzlesBox" spacing="10" alignment="CENTER">
+                        <Label text="Puzzles" style="-fx-text-fill: cyan; -fx-font-size: 16px;"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+        </center>
+
+        <!-- Bottom: Hints -->
+        <bottom>
+            <VBox alignment="CENTER" spacing="10">
+                <Button fx:id="hintButton" text="Get Hint" onAction="#handleHint"
+                        style="-fx-background-color: #002244; -fx-text-fill: #00ffff; -fx-padding: 8 20; -fx-font-size: 14px;"/>
+                <Label fx:id="hintLabel" text="Hint will appear here."
+                       style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-style: italic;"/>
+            </VBox>
+        </bottom>
+    </BorderPane>
+</StackPane>
