@@ -26,9 +26,7 @@ public class MainMenuController {
     @FXML
     public void initialize() {
         // Wire the start button
-        System.out.println("MainMenuController initialized, startBtn = " + startBtn);
         startBtn.setOnAction(e -> {
-        System.out.println("Start button clicked!");
         startGame();
         });
 
@@ -46,28 +44,20 @@ public class MainMenuController {
     /** Start the first level and switch to game scene */
     @FXML
 private void startGame() {
-    System.out.println("Start button clicked!");
-
     try {
         // Load GameUI.fxml
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/GameUI.fxml"));
-        StackPane root = loader.load();
-        System.out.println("FXML loaded");
-
+        Parent root = loader.load();
         // Load level 1 JSON
         DataLoader dataLoader = new DataLoader();
         Level firstLevel = dataLoader.loadData("levels/level1.json", Level.class);
-        System.out.println("Level loaded");
-
         // Initialize GameController
         GameController controller = loader.getController();
-        if (controller == null) {
-            System.out.println("Controller is null!");
-        } else {
-            System.out.println("Controller obtained: " + controller);
-        }
+        try {
         controller.initLevel(firstLevel, null);
-        System.out.println("Controller initialized");
+        } catch(Exception e){
+            e.printStackTrace();
+        }
 
         // Create new Scene with medium size
         Scene scene = new Scene(root, 800, 600);
@@ -76,8 +66,6 @@ private void startGame() {
         Stage stage = (Stage) startBtn.getScene().getWindow();
         stage.setScene(scene);
         stage.show();
-        System.out.println("Scene switched");
-
         // Allow fullscreen toggle with F11
         scene.setOnKeyPressed(event -> {
             switch (event.getCode()) {
@@ -89,7 +77,6 @@ private void startGame() {
         e.printStackTrace();
     }
 }
-
 
     @FXML
     /** Open settings popup as modal */
