@@ -2,6 +2,12 @@
   "levelId": 1,
   "name": "The Awakening",
   "timeLimitSec": 300,
+  "accessCardX": 550,
+  "accessCardY": 770,
+  "doorX": 900,
+  "doorY": 300,
+  "doorWidth": 150,
+  "doorHeight": 300,
   "items": [
     { "id": "card1", "name": "Access Card" }
   ],
@@ -13,6 +19,9 @@
     }
   ],
   "hints": [
-    "Search under furniture."
+    "Not everything is in plain sight.",
+    "A small, shiny object is near the furniture.",
+    "The Access Card is near the bed, check carefully!"
+    
   ]
 }

@@ -15,6 +15,14 @@ public class Level {
     private int levelId;
     private String name;
     private int timeLimitSec;
+    
+    // New fields for click areas
+    private int accessCardX;
+    private int accessCardY;
+    private int doorX;
+    private int doorY;
+    private int doorWidth;
+    private int doorHeight;
 
     private Item[] items;
     private Puzzle[] puzzles;
@@ -29,6 +37,14 @@ public class Level {
         this.levelId = data.levelId;
         this.name = data.name;
         this.timeLimitSec = data.timeLimitSec;
+
+        // Clickable areas
+        this.accessCardX = data.accessCardX;
+        this.accessCardY = data.accessCardY;
+        this.doorX = data.doorX;
+        this.doorY = data.doorY;
+        this.doorWidth = data.doorWidth;
+        this.doorHeight = data.doorHeight;
 
         // Items
         if (data.items != null) {
@@ -122,6 +138,23 @@ public class Level {
     public int getHintsUsed() { return hintsUsed; }
     public boolean[] getPuzzlesSolved() { return puzzlesSolved; }
     public boolean[] getItemsCollected() { return itemsCollected; }
+    public int getAccessCardX() { return accessCardX; }
+    public void setAccessCardX(int accessCardX) { this.accessCardX = accessCardX; }
+
+    public int getAccessCardY() { return accessCardY; }
+    public void setAccessCardY(int accessCardY) { this.accessCardY = accessCardY; }
+
+    public int getDoorX() { return doorX; }
+    public void setDoorX(int doorX) { this.doorX = doorX; }
+
+    public int getDoorY() { return doorY; }
+    public void setDoorY(int doorY) { this.doorY = doorY; }
+
+    public int getDoorWidth() { return doorWidth; }
+    public void setDoorWidth(int doorWidth) { this.doorWidth = doorWidth; }
+
+    public int getDoorHeight() { return doorHeight; }
+    public void setDoorHeight(int doorHeight) { this.doorHeight = doorHeight; }
     //setters
     public void setHints(String[] hints) {
         this.hints = hints;

@@ -6,7 +6,8 @@ public class Puzzle {
     private String solution;
     private String[] clues;
     private String[] requiredItems; 
-
+    private boolean solved = false;           // Track if puzzle is solved
+    private String requiredItemName = null; 
     public Puzzle() {}
 
     public Puzzle(String id, String description, String[] requiredItems) {
@@ -28,7 +29,12 @@ public class Puzzle {
     public String getSolution() {
         return solution;
     }
-
+    public boolean isSolved() {
+        return solved;
+    }
+    public void setSolved(boolean solved) {
+        this.solved = solved;
+    }
     public String[] getClues() {
         return clues;
     }
@@ -36,6 +42,13 @@ public class Puzzle {
     public String[] getRequiredItems() {
         return requiredItems;
     }
+    public String getRequiredItemName() {
+        return requiredItemName;
+    }
+    public void setRequiredItemName(String requiredItemName) {
+        this.requiredItemName = requiredItemName;
+    }
 }
+
 
 

@@ -5,6 +5,15 @@ public class LevelData {
     public String name;
     public int timeLimitSec;
 
+     // Click areas
+    public int accessCardX;
+    public int accessCardY;
+    public int doorX;
+    public int doorY;
+    public int doorWidth;
+    public int doorHeight;
+
+
     public Item[] items;
     public Puzzle[] puzzles;
     public String[] hints;

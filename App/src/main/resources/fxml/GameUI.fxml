@@ -7,80 +7,83 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.layout.Region?>
 
+
+
 <StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:id="rootStack"
            fx:controller="org.escaperoom.ui.controllers.GameController"
            style="-fx-background-color: black;">
 
-    <!-- Background image that stretches with the window -->
-    <ImageView fx:id="backgroundImageView"
-               preserveRatio="false"
-               smooth="true"
-               mouseTransparent="true"/>
+    <!-- Background Image -->
+    <ImageView fx:id="backgroundImageView" preserveRatio="false" smooth="true" mouseTransparent="true"/>
 
-    <!-- Game UI overlays -->
+    <!-- Main Game UI -->
     <BorderPane>
 
         <!-- Top HUD -->
         <top>
-            <HBox spacing="20"
-                  alignment="CENTER_LEFT"
-                  style="-fx-padding: 15; -fx-background-color: transparent;">
-                <Label text="Time:"
-                       style="-fx-text-fill: white; -fx-font-size: 18px;"/>
-                <Label fx:id="timerLabel"
-                       text="00:00"
-                       style="-fx-text-fill: #00e0ff; -fx-font-size: 18px;"/>
+            <HBox spacing="20" alignment="CENTER_LEFT" style="-fx-padding: 10; -fx-background-color: transparent;">
+                <Label fx:id="timerLabel" text="00:00" style="-fx-text-fill: #00e0ff; -fx-font-size: 16px;"/>
+                <ImageView fx:id="coinIcon" fitWidth="20" fitHeight="20"/>
+                 <Label fx:id="coinsLabel" text="Coins: 0" style="-fx-text-fill: white; -fx-font-size: 16px;"/>
+                <Button fx:id="hintButton" text="Hint" style="-fx-font-size: 14px;"/>
+                <Button fx:id="inventoryBtn" text="Inventory" style="-fx-font-size: 14px;"/>
+
                 <Region HBox.hgrow="ALWAYS"/>
-                <Button fx:id="menuBtn"
-                        text="Menu"
-                        style="-fx-font-size: 14px;"/>
+                <Button fx:id="menuBtn" text="Menu" style="-fx-font-size: 14px;"/>
             </HBox>
         </top>
-
         <!-- Center puzzle area -->
         <center>
-            <StackPane fx:id="puzzleArea"
-                       style="-fx-background-color: rgba(255,255,255,0.05);
-                              -fx-border-color: #00e0ff;
-                              -fx-border-width: 2;">
-                <Label text="Solve the puzzle..."
-                       style="-fx-text-fill:white; -fx-font-size:24px;"/>
+            <StackPane fx:id="puzzleArea" style="-fx-background-color: rgba(255,255,255,0.05); -fx-border-color: #00e0ff; -fx-border-width: 2;">
+                <Label text="Solve the puzzle..." style="-fx-text-fill:white; -fx-font-size:24px;"/>
             </StackPane>
         </center>
 
-        <!-- Bottom inventory -->
-        <bottom>
-            <HBox fx:id="inventoryBar"
-                  alignment="CENTER"
-                  spacing="15"
-                  style="-fx-padding: 10; -fx-background-color: transparent;">
-                <Label text="Inventory:" style="-fx-text-fill: white;"/>
-                <ListView fx:id="inventoryList"
-                          prefHeight="50"
-                          prefWidth="200"/>
-                <Button fx:id="hintButton" text="Hint"/>
-                <Label fx:id="hintLabel"
-                       text=""
-                       style="-fx-text-fill: yellow;
-                              -fx-background-color: transparent;"/>
-            </HBox>
-        </bottom>
-
-        <!-- Right VBox for item buttons -->
+        <!-- Optional right and left panels -->
         <right>
-            <VBox fx:id="itemsBox"
-                  spacing="10"
-                  style="-fx-padding: 10;"/>
+            <VBox fx:id="itemsBox" spacing="10" style="-fx-padding: 10;"/>
         </right>
-
-        <!-- Left VBox for puzzle buttons -->
         <left>
-            <VBox fx:id="puzzlesBox"
-                  spacing="10"
-                  style="-fx-padding: 10;"/>
+            <VBox fx:id="puzzlesBox" spacing="10" style="-fx-padding: 10;"/>
         </left>
 
     </BorderPane>
+
+    <Pane fx:id="clickAreaPane" pickOnBounds="false">
+        <!-- Access Card clickable region -->
+        <Rectangle fx:id="accessCardArea"
+                   layoutX="620" layoutY="780" width="80" height="60"
+                   fill="Transparent" 
+                   pickOnBounds="true"
+                    mouseTransparent="false" 
+                   onMouseClicked="#handleAccessCardClick" />
+
+        <!-- Door clickable region -->
+        <Rectangle fx:id="doorArea"
+           layoutX="128" layoutY="400" width="150" height="300"
+           fill="Transparent"
+           pickOnBounds="true"
+           mouseTransparent="false"
+           onMouseClicked="#handleDoorClick" />
+    </Pane>
+    <!-- Inventory popup -->
+    <StackPane fx:id="inventoryPanel" visible="false"
+           prefWidth="300" prefHeight="400"
+           maxWidth="300" maxHeight="400"
+           style="-fx-background-color: rgba(0,0,0,0.8); -fx-padding: 15; -fx-border-color: #00e0ff; -fx-border-width: 2; -fx-border-radius: 10; -fx-background-radius: 10;"
+           StackPane.alignment="CENTER">
+
+        <VBox spacing="10" alignment="CENTER">
+        <Label text="Inventory" style="-fx-text-fill: white; -fx-font-size: 16px;"/>
+        <ListView fx:id="inventoryList" prefHeight="300" prefWidth="280"/>
+        <Button fx:id="closeInventoryBtn" text="Close" maxWidth="100"/>
+        </VBox>
+    </StackPane>
+    <!-- Hint label overlay -->
+    <Label fx:id="hintLabel" text="" style="-fx-text-fill: yellow; -fx-font-size: 14px; -fx-padding: 5;" StackPane.alignment="BOTTOM_CENTER"/>
 </StackPane>
